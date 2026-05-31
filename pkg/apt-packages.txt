@@ -1,0 +1,40 @@
+# =============================================================================
+# Linux (Debian/Ubuntu) — APT dependencies
+# Install: xargs -a apt-packages.txt sudo apt install -y
+# =============================================================================
+
+# Build essentials
+build-essential
+git
+curl
+wget
+unzip
+
+# Shell
+zsh
+tmux
+
+# Dev tools
+python3
+python3-pip
+python3-venv
+nodejs
+npm
+ripgrep
+fd-find
+fzf
+bat
+eza
+zoxide
+jq
+tree
+
+# NeoVim
+neovim
+
+# Clipboard (for tmux cross-platform copy)
+xclip
+wl-clipboard
+
+# Fonts (for terminal icons)
+fonts-jetbrains-mono

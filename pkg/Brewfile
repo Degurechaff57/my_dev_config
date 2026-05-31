@@ -1,0 +1,47 @@
+# =============================================================================
+# macOS — Homebrew dependencies
+# Install: brew bundle --file=~/dotfiles/pkg/Brewfile
+# =============================================================================
+
+# Terminal & Shell
+brew "tmux"
+brew "zsh"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
+
+# Editor
+brew "neovim"
+
+# Modern CLI replacements
+brew "eza"
+brew "bat"
+brew "fd"
+brew "ripgrep"
+brew "fzf"
+brew "zoxide"
+
+# Dev tools
+brew "git"
+brew "gh"
+brew "node"
+brew "python@3"
+brew "rust"
+brew "go"
+
+# Code formatters / linters
+brew "stylua"
+brew "shfmt"
+brew "shellcheck"
+brew "flake8"
+
+# Utilities
+brew "jq"
+brew "tree"
+brew "wget"
+brew "curl"
+
+# Fonts (for terminal icons)
+brew "font-jetbrains-mono-nerd-font"
+
+# macOS-specific
+cask "kitty"

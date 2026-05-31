@@ -1,0 +1,21 @@
+# Secrets — NEVER commit real tokens
+zsh/.zshrc.secrets
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# LazyVim / NeoVim
+nvim/spell/
+nvim/plugin/packer_compiled.lua
+
+# Editor backups
+*~
+*.swp
+*.swo
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
