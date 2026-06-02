@@ -1,5 +1,6 @@
 # =============================================================================
-# Custom shell functions
+# Cross-shell functions (bash & zsh)
+# Sourced by both .bashrc and .zshrc
 # =============================================================================
 
 # ---------- Intelligent 3-pane dev layout ----------

@@ -1,5 +1,6 @@
 # Secrets — NEVER commit real tokens
 zsh/.zshrc.secrets
+shared/secrets.sh
 
 # macOS
 .DS_Store

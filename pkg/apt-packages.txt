@@ -1,6 +1,6 @@
 # =============================================================================
 # Linux (Debian/Ubuntu) — APT dependencies
-# Install: xargs -a apt-packages.txt sudo apt install -y
+# Install: grep -v '^#' apt-packages.txt | grep -v '^$' | xargs sudo apt install -y
 # =============================================================================
 
 # Build essentials
@@ -10,8 +10,8 @@ curl
 wget
 unzip
 
-# Shell
-zsh
+# Shell enhancements (bash-native, no zsh needed)
+bash-completion
 tmux
 
 # Dev tools
