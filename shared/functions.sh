@@ -24,16 +24,19 @@ function dev_layout() {
             return
         fi
 
-        # Create fresh session
+        # Create fresh session (respects base-index from tmux.conf)
         tmux new-session -d -s dev
-        tmux split-window -h -t dev:0.0 -p 80
-        tmux split-window -v -t dev:0.1 -p 50
+        local win
+        win=$(tmux display -p -t dev: '#{window_index}')
+        # Split into 3 panes: 80% editor | 20% right (split 50/50 vertically)
+        tmux split-window -h -t "dev:${win}" || true
+        tmux split-window -v -t "dev:${win}.1" || true
         if [ -n "$ai_cmd" ]; then
-            tmux send-keys -t dev:0.0 "$ai_cmd" C-m
+            tmux send-keys -t "dev:${win}.0" "$ai_cmd" C-m
         fi
-        tmux send-keys -t dev:0.2 "nvim" C-m
-        tmux select-pane -t dev:0.1
-        tmux attach-session -t dev
+        tmux send-keys -t "dev:${win}.2" "nvim" C-m
+        tmux select-pane -t "dev:${win}.1"
+        tmux attach-session -t dev || { echo "Run: tmux attach-session -t dev"; }
     else
         # Inside tmux — split current window
         tmux split-window -h -p 80

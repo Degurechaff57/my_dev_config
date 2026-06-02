@@ -23,12 +23,7 @@ DOTFILES="${HOME}/.dotfiles"
 # Install: bootstrap.sh downloads pre-built nightly from GitHub releases
 _ble_path="${HOME}/.local/share/blesh/ble.sh"
 if [ -f "$_ble_path" ]; then
-    source "$_ble_path" --attach=none
-    # ble.sh may not define bleopt in non-TTY environments
-    if command -v bleopt &>/dev/null; then
-        # Disable the built-in clock in ble.sh's prompt (starship handles the prompt)
-        bleopt prompt_clock_show=
-    fi
+    source "$_ble_path"
 fi
 unset _ble_path
 
