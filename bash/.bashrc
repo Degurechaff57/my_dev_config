@@ -51,9 +51,15 @@ if command -v fzf &>/dev/null; then
     if fzf --bash &>/dev/null 2>&1; then
         eval "$(fzf --bash)"
     else
-        # Fallback: source key-bindings from package (Debian/Ubuntu)
-        _fzf_kb="/usr/share/doc/fzf/examples/key-bindings.bash"
-        [ -f "$_fzf_kb" ] && source "$_fzf_kb"
+        # Fallback: source key-bindings from various possible paths
+        for _fzf_kb in \
+            "/usr/share/doc/fzf/examples/key-bindings.bash" \
+            "$HOME/.local/share/fzf/shell/key-bindings.bash"; do
+            if [ -f "$_fzf_kb" ]; then
+                source "$_fzf_kb"
+                break
+            fi
+        done
         unset _fzf_kb
     fi
 fi
