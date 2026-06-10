@@ -23,7 +23,7 @@ DOTFILES="${HOME}/.dotfiles"
 # Install: bootstrap.sh downloads pre-built nightly from GitHub releases
 _ble_path="${HOME}/.local/share/blesh/ble.sh"
 if [ -f "$_ble_path" ]; then
-    source "$_ble_path"
+  source "$_ble_path"
 fi
 unset _ble_path
 
@@ -31,32 +31,32 @@ unset _ble_path
 # Shows: git branch/status, language versions, command duration, error codes.
 # Install: curl -sS https://starship.rs/install.sh | sh
 if command -v starship &>/dev/null; then
-    eval "$(starship init bash)"
+  eval "$(starship init bash)"
 fi
 
 # ---------- zoxide — smarter cd (replaces "z" plugin) ----------
 if command -v zoxide &>/dev/null; then
-    eval "$(zoxide init bash)"
+  eval "$(zoxide init bash)"
 fi
 
 # ---------- fzf — fuzzy finder keybindings ----------
 # Ctrl-R: fuzzy history search | Ctrl-T: fuzzy file search | Alt-C: fuzzy cd
 if command -v fzf &>/dev/null; then
-    # Try built-in init first (fzf >= 0.48)
-    if fzf --bash &>/dev/null 2>&1; then
-        eval "$(fzf --bash)"
-    else
-        # Fallback: source key-bindings from various possible paths
-        for _fzf_kb in \
-            "/usr/share/doc/fzf/examples/key-bindings.bash" \
-            "$HOME/.local/share/fzf/shell/key-bindings.bash"; do
-            if [ -f "$_fzf_kb" ]; then
-                source "$_fzf_kb"
-                break
-            fi
-        done
-        unset _fzf_kb
-    fi
+  # Try built-in init first (fzf >= 0.48)
+  if fzf --bash &>/dev/null 2>&1; then
+    eval "$(fzf --bash)"
+  else
+    # Fallback: source key-bindings from various possible paths
+    for _fzf_kb in \
+      "/usr/share/doc/fzf/examples/key-bindings.bash" \
+      "$HOME/.local/share/fzf/shell/key-bindings.bash"; do
+      if [ -f "$_fzf_kb" ]; then
+        source "$_fzf_kb"
+        break
+      fi
+    done
+    unset _fzf_kb
+  fi
 fi
 
 # ---------- Shared aliases ----------

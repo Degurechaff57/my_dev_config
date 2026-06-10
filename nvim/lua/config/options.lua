@@ -3,3 +3,25 @@
 -- Add any additional options here
 
 vim.opt.spelllang = { "en", "cjk" }
+
+-- OSC 52 clipboard over SSH: yank in nvim → local laptop clipboard
+-- How it works: nvim yank → OSC 52 escape seq → tmux forwards → local terminal writes to clipboard
+-- LazyVim disables clipboard sync (vim.opt.clipboard = "") in SSH by default;
+-- we re-enable it with the OSC 52 provider so yanks reach your local machine.
+if vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT or vim.env.SSH_TTY then
+  local ok, osc52 = pcall(require, "vim.ui.clipboard.osc52")
+  if ok then
+    vim.g.clipboard = {
+      name = "OSC 52",
+      copy = {
+        ["+"] = osc52.copy("+"),
+        ["*"] = osc52.copy("*"),
+      },
+      paste = {
+        ["+"] = osc52.paste("+"),
+        ["*"] = osc52.paste("*"),
+      },
+    }
+    vim.opt.clipboard = "unnamedplus" -- yank → + register → OSC 52 → local clipboard
+  end
+end
