@@ -198,10 +198,30 @@ elif [ "$OS" = "Linux" ]; then
         SKIPPED+=("starship")
     fi
 
-    # --- Symlinks ---
-    info "Creating symlinks..."
-    backup "$HOME/.bashrc"
-    ln -sf "$DOTFILES/bash/.bashrc" "$HOME/.bashrc"
+    # --- bashrc: create wrapper that sources dotfiles (NOT a symlink) ---
+    info "Setting up ~/.bashrc..."
+    if [ ! -L "$HOME/.bashrc" ]; then
+        backup "$HOME/.bashrc"
+    else
+        # Remove old symlink from previous bootstrap
+        rm -f "$HOME/.bashrc"
+    fi
+    # Create ~/.bashrc as a regular file (never committed to git)
+    # It sources the dotfiles shared config, and you can add personal stuff below.
+    cat > "$HOME/.bashrc" << 'BASHRC_EOF'
+# ~/.bashrc — your personal bash config
+# This file is NOT managed by git. Add your own exports, aliases, etc. below.
+
+# Source the dotfiles shared configuration
+if [ -f "$HOME/.dotfiles/bash/.bashrc" ]; then
+    source "$HOME/.dotfiles/bash/.bashrc"
+fi
+
+# ── Your personal additions ──────────────────────────────────────────
+# Everything below this line is yours — it will never be committed.
+
+BASHRC_EOF
+    info "~/.bashrc created (regular file — add personal config freely)"
 
 fi  # --- end platform block ---
 
