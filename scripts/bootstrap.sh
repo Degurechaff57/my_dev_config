@@ -220,18 +220,57 @@ mkdir -p "$HOME/.config"
 ln -sfn "$DOTFILES/nvim" "$HOME/.config/nvim"
 
 # =============================================================================
-# Secrets template
+# Secrets — auto-migrate API keys from old config, or copy template
 # =============================================================================
+_need_secrets=false
 if [ ! -f "$DOTFILES/shared/secrets.sh" ] && [ ! -f "$DOTFILES/zsh/.zshrc.secrets" ]; then
-    info "Copying secrets template..."
-    cp "$DOTFILES/shared/secrets.sh.example" "$DOTFILES/shared/secrets.sh"
-    warn ""
-    warn "  ╔══════════════════════════════════════════════════════════╗"
-    warn "  ║  ACTION REQUIRED: Edit ~/.dotfiles/shared/secrets.sh   ║"
-    warn "  ║  Fill in your API keys before using CLI tools.          ║"
-    warn "  ╚══════════════════════════════════════════════════════════╝"
-    warn ""
+    _need_secrets=true
 fi
+
+# If secrets.sh exists but is still the unedited template, treat as missing
+if [ -f "$DOTFILES/shared/secrets.sh" ] && grep -q 'your-api-key-here' "$DOTFILES/shared/secrets.sh" 2>/dev/null; then
+    _need_secrets=true
+fi
+
+if [ "$_need_secrets" = true ]; then
+    # Try to recover API keys from backed-up configs
+    _old_rc="${HOME}/.bashrc.backup."* 2>/dev/null || true
+    _found_keys=false
+
+    for _f in $_old_rc; do
+        [ -f "$_f" ] || continue
+        if grep -q 'ANTHROPIC_AUTH_TOKEN\|ANTHROPIC_BASE_URL' "$_f" 2>/dev/null; then
+            info "Found API keys in backup: $(basename "$_f")"
+            info "Migrating keys to shared/secrets.sh..."
+
+            # Extract existing env vars from the backup
+            {
+                echo "# Auto-migrated from $(basename "$_f") on $(date +%Y-%m-%d)"
+                grep -E 'export (ANTHROPIC|OPENAI|HUGGINGFACE)_' "$_f" 2>/dev/null || true
+                echo ""
+                echo "# Fill in any remaining keys below"
+                echo "# See shared/secrets.sh.example for the full template"
+            } > "$DOTFILES/shared/secrets.sh"
+
+            _found_keys=true
+            break
+        fi
+    done
+
+    if [ "$_found_keys" = false ]; then
+        info "Copying secrets template..."
+        cp "$DOTFILES/shared/secrets.sh.example" "$DOTFILES/shared/secrets.sh"
+        warn ""
+        warn "  ╔══════════════════════════════════════════════════════════╗"
+        warn "  ║  ACTION REQUIRED: Edit ~/.dotfiles/shared/secrets.sh   ║"
+        warn "  ║  Fill in your API keys before using CLI tools.          ║"
+        warn "  ╚══════════════════════════════════════════════════════════╝"
+        warn ""
+    else
+        info "API keys migrated. Verify with: nvim ~/.dotfiles/shared/secrets.sh"
+    fi
+fi
+unset _need_secrets _old_rc _found_keys _f
 
 # =============================================================================
 # Summary
