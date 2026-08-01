@@ -17,9 +17,12 @@ if vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT or vim.env.SSH_TTY then
         ["+"] = osc52.copy("+"),
         ["*"] = osc52.copy("*"),
       },
+      -- No OSC 52 paste — the terminal (WezTerm) sends pasted text
+      -- directly via bracketed paste, which is orders of magnitude
+      -- faster than base64 roundtripping the clipboard through OSC 52.
       paste = {
-        ["+"] = osc52.paste("+"),
-        ["*"] = osc52.paste("*"),
+        ["+"] = function() return vim.fn.getreg("+") end,
+        ["*"] = function() return vim.fn.getreg("*") end,
       },
     }
     vim.opt.clipboard = "unnamedplus" -- yank → + register → OSC 52 → local clipboard
