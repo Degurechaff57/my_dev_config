@@ -1,6 +1,13 @@
-# Secrets — NEVER commit real tokens
-zsh/.zshrc.secrets
-shared/secrets.sh
+# ---------------------------------------------------------------------------
+# Machine-local interactive shell overrides — NEVER committed
+# ---------------------------------------------------------------------------
+# bootstrap.sh creates an empty ~/.zshrc.local if missing. Put host-specific
+# things there so the tracked config stays portable:
+#   - CUDA / vendor SDK PATH and *_HOME variables
+#   - host-only ulimit tweaks
+#   - host-only aliases and functions
+# ---------------------------------------------------------------------------
+.zshrc.local
 
 # macOS
 .DS_Store
@@ -20,4 +27,3 @@ nvim/plugin/packer_compiled.lua
 # OS generated files
 Thumbs.db
 ehthumbs.db
-secrets.sh

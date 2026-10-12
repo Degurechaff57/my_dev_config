@@ -1,5 +1,15 @@
 # =============================================================================
-# Zsh configuration — macOS primary, Linux optional
+# Zsh configuration — unified interactive shell for macOS & Linux
+#
+# This is the ONLY interactive shell config. Scripts stay on their shebang
+# (bash/python/...), so they are unaffected by the login shell.
+#
+# Toolchain (all via Oh My Zsh plugins — no ble.sh / starship needed):
+#   zsh-autosuggestions      → fish-style grey inline suggestions
+#   zsh-syntax-highlighting  → real-time syntax colouring
+#   z                       → directory jumping (replaces zoxide)
+#   git/copyfile/copypath    → git aliases & clipboard helpers
+#
 # Sources shared/ configs for cross-shell aliases, functions, and env vars.
 # =============================================================================
 
@@ -32,9 +42,7 @@ source $ZSH/oh-my-zsh.sh
 # ---------- Shared functions (dev_layout, mkproj, extract) ----------
 [ -f "$DOTFILES/shared/functions.sh" ] && source "$DOTFILES/shared/functions.sh"
 
-# ---------- Secrets (API keys etc. — NEVER committed to git) ----------
-if [ -f "$DOTFILES/shared/secrets.sh" ]; then
-    source "$DOTFILES/shared/secrets.sh"
-elif [ -f "$DOTFILES/zsh/.zshrc.secrets" ]; then
-    source "$DOTFILES/zsh/.zshrc.secrets"
-fi
+# ---------- Machine-local additions (NOT tracked by git) ----------
+# Put host-specific things here: CUDA paths, vendor SDK env, ulimit tweaks,
+# host-only aliases. Create it with: touch ~/.zshrc.local
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"

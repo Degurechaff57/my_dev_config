@@ -1,6 +1,11 @@
 # =============================================================================
 # Linux (Debian/Ubuntu) — APT dependencies
-# Install: grep -v '^#' apt-packages.txt | grep -v '^$' | xargs sudo apt install -y
+#
+# Install (bootstrap.sh --with-sudo does this for you):
+#   grep -v '^#' apt-packages.txt | grep -v '^$' | xargs sudo apt install -y
+#
+# Interactive shell is zsh everywhere (macOS & Linux). Oh My Zsh + plugins are
+# installed by bootstrap.sh into ~/.oh-my-zsh (user-space, not from APT).
 # =============================================================================
 
 # Build essentials
@@ -10,7 +15,8 @@ curl
 wget
 unzip
 
-# Shell enhancements (bash-native, no zsh needed)
+# Shell — zsh is the single interactive shell; bash stays for scripts (shebang)
+zsh
 bash-completion
 tmux
 
@@ -22,10 +28,7 @@ nodejs
 npm
 ripgrep
 fd-find
-fzf
 bat
-eza
-zoxide
 jq
 tree
 
