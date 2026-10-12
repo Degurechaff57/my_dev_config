@@ -80,21 +80,26 @@ local act = wezterm.action
 
 config.keys = {
 	-- ---------- 分屏（对齐 VSCode）----------
-	-- VSCode: Ctrl+Shift+5 = 终端分屏。这里保持一致。
-	-- Ctrl+Shift+5 是 WezTerm 默认的 SplitVertical（上下分），无需自定义。
-	-- 补一个「左右分」的等价键，语义与 VSCode 的「向右拆分编辑器」一致。
+	-- VSCode 里 Ctrl+Shift+5 = 分屏终端；这里给同样的键做「上下分屏」。
+	-- 注意：Ctrl+Shift+5 也是 WezTerm 默认的 SplitVertical，写出来只是为了让
+	-- 语义在配置里自解释，行为与默认一致。
+	{ key = "5", mods = "CTRL|SHIFT", action = act.SplitVertical({}) },
+	-- VSCode 里 Ctrl+Shift+5 的「正交」是 Ctrl+Shift+Alt+5；这里补左右分屏
 	{ key = "e", mods = "CTRL|SHIFT", action = act.SplitHorizontal({}) },
-	-- VSCode: Ctrl+\ = 向右拆分编辑器。这里给 WezTerm 同样的键
+	-- VSCode: Ctrl+\ = 向右拆分编辑器。这里给 WezTerm 同样的键做左右分屏
 	{ key = "\\", mods = "CTRL", action = act.SplitHorizontal({}) },
+	-- 兼容：保留 WezTerm 默认的 Ctrl+Alt+% / Ctrl+Alt+" 两个 tmux 风格分屏键，无需自定义
 
 	-- ---------- 标签页 ----------
 	-- Ctrl+Shift+T 是 WezTerm 默认（新建标签），与浏览器/VSCode 习惯一致，保留默认。
-	-- 这里额外支持 Ctrl+T：默认表里没有（会被 Windows 的 PowerShell 吃掉反引号类的键）
+	-- 额外支持 Ctrl+T：默认表里没有，且原配置里 Ctrl+T 曾被 WezTerm 抢走导致
+	-- PowerShell 侧 fzf 的 Ctrl+t（历史搜索）失效 —— 这里显式声明，行为可预期。
 	{ key = "t", mods = "CTRL", action = act.SpawnTab("CurrentPaneDomain") },
 	{ key = "T", mods = "CTRL", action = act.SpawnTab("CurrentPaneDomain") },
 
 	-- 关闭标签页：Ctrl+Shift+W（浏览器习惯）与 Ctrl+F4（Windows 习惯）
-	-- 不能用 Ctrl+W —— 那个必须透传给 shell 做「删除前一个单词」
+	-- 不能用 Ctrl+W —— 那个必须透传给 shell 做「删除前一个单词」。
+	-- WezTerm 默认没有 Ctrl+W 绑定，所以它本来就会透传，无需显式声明。
 	{ key = "w", mods = "CTRL|SHIFT", action = act.EmitEvent("close-tab-safe") },
 	{ key = "F4", mods = "CTRL", action = act.EmitEvent("close-tab-safe") },
 
@@ -102,7 +107,7 @@ config.keys = {
 	-- Alt+方向键 切换窗格是 WezTerm 默认，保留（与 VSCode 的 Ctrl+数字 切组语义相近）
 	-- 关闭当前窗格：Ctrl+Shift+Alt+W（比默认的 Ctrl+Shift+W 更明确，避免误关标签）
 	{ key = "w", mods = "CTRL|SHIFT|ALT", action = act.CloseCurrentPane({ confirm = true }) },
-	-- 放大/还原当前窗格（VSCode: Ctrl+B 折叠侧栏的"专注"语义）
+	-- 放大/还原当前窗格（对应 VSCode 把某个编辑器组最大化的"专注"语义）
 	{ key = "z", mods = "CTRL|SHIFT|ALT", action = act.TogglePaneZoomState },
 }
 
