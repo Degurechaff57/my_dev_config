@@ -1,120 +1,138 @@
 # dotfiles
 
-Cross-platform development environment configuration. One command to deploy on **macOS** and **Linux**.
+跨平台开发环境配置。一条命令部署到 **macOS** 和 **Linux**。
 
-- **Interactive shell**: `zsh` + Oh My Zsh on **both** platforms — one config, no per-OS divergence.
-- **Scripts stay as scripts**: they keep their shebang (`#!/usr/bin/env bash`, `#!/usr/bin/env python3`, …). Changing the login shell does not affect them.
-- **Baseline for everything**: this repo is the single source of truth. Machines are deployed from it, not the other way around.
+- **交互 shell**：`zsh` + Oh My Zsh，**两个平台统一** —— 一份配置，无按系统分叉。
+- **脚本仍是脚本**：保留各自的 shebang（`#!/usr/bin/env bash`、`#!/usr/bin/env python3`…）。改登录 shell 不影响它们。
+- **唯一基线**：本仓库是所有机器的配置来源；机器从仓库部署，而不是反过来。
+- **终端**：WezTerm（`wezterm/wezterm.lua`），键位刻意与 VSCode 对齐。
 
-## What's included
+## 包含什么
 
-| Config | Both platforms |
-|--------|----------------|
-| **Shell** | `zsh/.zshrc` → Oh My Zsh + plugins |
-| **Aliases** | `shared/aliases.sh` |
-| **Functions** | `shared/functions.sh` (`dev_layout`, `mkproj`, `extract`) |
-| **Environment** | `shared/env.sh` (OS detection, PATH, XDG, editor, locale, history) |
-| **Tmux** | `tmux/.tmux.conf` |
-| **NeoVim** | `nvim/` (LazyVim) |
-| **Machine-local overrides** | `~/.zshrc.local` (created empty, git-ignored) |
+| 配置 | 两个平台通用 |
+|---|---|
+| **Shell** | `zsh/.zshrc` → Oh My Zsh + 插件 |
+| **别名** | `shared/aliases.sh` |
+| **函数** | `shared/functions.sh`（`dev_layout`、`mkproj`、`extract`） |
+| **环境变量** | `shared/env.sh`（OS 检测、PATH、XDG、编辑器、locale、history、nvm、MAKEFLAGS） |
+| **tmux** | `tmux/.tmux.conf` |
+| **git** | `git/.gitconfig` + `git/.gitignore_global` |
+| **WezTerm** | `wezterm/wezterm.lua` |
+| **NeoVim** | `nvim/`（LazyVim） |
+| **机器本地覆盖** | `~/.zshrc.local`、`~/.gitconfig.local`（自动创建，git-ignored） |
 
-## Quick start
+## 快速开始
 
 ```bash
-# user-space: links configs, installs Oh My Zsh + plugins, no sudo
+# 用户态：链接配置、装 Oh My Zsh + 插件，不需要 sudo
 git clone git@github.com:Degurechaff57/my_dev_config.git ~/.dotfiles
 bash ~/.dotfiles/scripts/bootstrap.sh
 
-# also install system packages from pkg/apt-packages.txt (Debian/Ubuntu)
+# 顺便按 pkg/apt-packages.txt 装系统包（Debian/Ubuntu）
 bash ~/.dotfiles/scripts/bootstrap.sh --with-sudo
 ```
 
-Flags: `--with-sudo`, `--no-nvim` (leave an existing `~/.config/nvim` alone), `--skip-chsh`.
+可用参数：`--with-sudo`、`--no-nvim`（不动已有的 `~/.config/nvim`）、`--skip-chsh`。
 
-The script is idempotent — run it as often as you like. Files it replaces are backed up with a timestamp suffix.
+脚本是幂等的，重复运行安全；被替换的文件会加时间戳后缀备份。
 
-## Post-install
+## 安装后
 
-1. **Switch login shell** (one-time, needs your password):
+1. **切换登录 shell**（一次性，需要密码）：
    ```bash
    chsh -s "$(command -v zsh)"
    ```
-2. **Restart your terminal**, or enter zsh immediately with `exec zsh`.
-3. **Launch NeoVim** — LazyVim installs plugins on first run: `nvim`
-4. **Install a Nerd Font** — [JetBrains Mono Nerd Font](https://www.nerdfonts.com/) for terminal icons.
-5. **Host-specific config** → `~/.zshrc.local` (CUDA/vendor SDK PATH, `ulimit`, host-only aliases).
+2. **重启终端**，或立即进入 zsh：`exec zsh`
+3. **启动 NeoVim** —— 首次运行会自动装插件：`nvim`
+4. **装 Nerd Font** —— 终端图标需要。WezTerm 首选 **MesloLGM Nerd Font**：
+   ```bash
+   mkdir -p ~/.local/share/fonts && cd ~/.local/share/fonts
+   curl -fLO "https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Meslo/M/LG/complete/MesloLG%20Nerd%20Font%20Complete.ttf"
+   fc-cache -f
+   ```
+   > apt 的 `fonts-jetbrains-mono` 是**非 Nerd 版**，没有图标字形，只能当后备。
+5. **机器专属配置** → `~/.zshrc.local`（CUDA/厂商 SDK 的 PATH、`ulimit`、host 专属别名）
 
-## Structure
+## 目录结构
 
 ```
 ~/.dotfiles/
 ├── zsh/
-│   └── .zshrc               # THE interactive shell entry point (both platforms)
-├── shared/                  # sourced by zsh, kept POSIX-sh compatible
-│   ├── env.sh               # OS detection, PATH, XDG, editor, locale, history, MAKEFLAGS
-│   ├── aliases.sh           # git, navigation, safety nets, modern CLI, clipboard
-│   └── functions.sh         # dev_layout, mkproj, extract
+│   └── .zshrc               # 交互 shell 入口（两个平台共用）
+├── shared/                  # 被 zsh source，保持 POSIX-sh 兼容
+│   ├── env.sh               # OS 检测、PATH、XDG、编辑器、locale、history、nvm、MAKEFLAGS
+│   ├── aliases.sh           # git、导航、安全网、现代 CLI、剪贴板
+│   └── functions.sh         # dev_layout、mkproj、extract
 ├── tmux/
-│   └── .tmux.conf           # vi mode, cross-platform clipboard, Ctrl/Alt+N pane jumps
-├── nvim/                    # LazyVim config (symlinked to ~/.config/nvim)
+│   └── .tmux.conf           # vi 模式、跨平台剪贴板、Ctrl/Alt+数字 切窗格
+├── git/
+│   ├── .gitconfig           # 身份、别名、行为（跨机器通用）
+│   └── .gitignore_global    # C++/Python/LaTeX 构建产物全局忽略
+├── wezterm/
+│   └── wezterm.lua          # 终端配置，键位与 VSCode 对齐
+├── nvim/                    # LazyVim 配置（软链到 ~/.config/nvim）
 ├── scripts/
-│   ├── bootstrap.sh         # macOS & Linux one-shot setup
+│   ├── bootstrap.sh         # macOS & Linux 一键部署
 │   └── bootstrap.ps1        # Windows / PowerShell
 ├── pkg/
-│   ├── Brewfile             # macOS Homebrew dependencies
-│   └── apt-packages.txt     # Linux APT dependencies
+│   ├── Brewfile             # macOS Homebrew 依赖
+│   └── apt-packages.txt     # Linux APT 依赖
 ├── powershell/
 │   └── Microsoft.PowerShell_profile.ps1
 ├── .gitignore
 └── README.md
 ```
 
-## Shell stack
+## Shell 工具链
 
-Everything comes from Oh My Zsh — no external shell tooling to install:
+全部来自 Oh My Zsh —— 不需要额外安装 shell 工具：
 
-| Need | Provided by |
-|------|-------------|
-| Fish-style grey autosuggestions | `zsh-autosuggestions` |
-| Real-time syntax highlighting | `zsh-syntax-highlighting` |
-| Directory jumping (`z foo`) | `z` plugin |
-| Git aliases & status in prompt | `git` plugin |
-| Prompt | `ZSH_THEME` |
-| Clipboard helpers | `copyfile`, `copypath` |
+| 需求 | 由谁提供 |
+|---|---|
+| fish 风格灰色自动建议 | `zsh-autosuggestions` |
+| 实时语法高亮 | `zsh-syntax-highlighting` |
+| 目录跳转（`z foo`） | `z` 插件 |
+| git 别名与提示符状态 | `git` 插件 |
+| 提示符 | `ZSH_THEME` |
+| 剪贴板辅助 | `copyfile`、`copypath` |
 
-> **Why zsh everywhere instead of bash+ble.sh on Linux?** One config for all machines means one place to fix things. The plugins above cover exactly what ble.sh + starship + zoxide did, with fewer moving parts (no separate binaries in `~/.local/bin`). Scripts are unaffected because they keep their shebang.
+> **为什么两平台都用 zsh 而不是 Linux 上用 bash+ble.sh？** 所有机器一份配置，意味着只有一个地方需要修。
+> 上面的插件正好覆盖了 ble.sh + starship + zoxide 的功能，而且活动部件更少（不需要往 `~/.local/bin` 放额外二进制）。
+> 脚本不受影响，因为它们保留自己的 shebang。
 
-## Platform-specific behavior
+## 平台差异
 
-| Feature | macOS | Linux |
-|---------|-------|-------|
-| Package manager | Homebrew (`pkg/Brewfile`) | apt (`pkg/apt-packages.txt`) |
-| Clipboard | `pbcopy` / `pbpaste` | `wl-copy` / `xclip` (auto-detected) |
-| Tmux copy (`y` in copy-mode) | `pbcopy` | `wl-copy` → `xclip` → `clip.exe` |
-| `update` / `cleanup` aliases | `brew update && brew upgrade` | `sudo apt update && sudo apt upgrade -y` |
+| 特性 | macOS | Linux |
+|---|---|---|
+| 包管理器 | Homebrew（`pkg/Brewfile`） | apt（`pkg/apt-packages.txt`） |
+| 剪贴板 | `pbcopy` / `pbpaste` | `wl-copy` / `xclip`（自动检测） |
+| tmux 复制（copy-mode 里按 `y`） | `pbcopy` | `wl-copy` → `xclip` → `clip.exe` |
+| `update` / `cleanup` 别名 | `brew update && brew upgrade` | `sudo apt update && sudo apt upgrade -y` |
 
-## Adding new machines
+## 新增一台机器
 
 1. `git clone git@github.com:Degurechaff57/my_dev_config.git ~/.dotfiles`
 2. `bash ~/.dotfiles/scripts/bootstrap.sh --with-sudo`
-3. `chsh -s "$(command -v zsh)"` → restart terminal
-4. Put anything host-specific in `~/.zshrc.local`
+3. `chsh -s "$(command -v zsh)"` → 重启终端
+4. 任何 host 专属的东西放 `~/.zshrc.local`
 
-To pull later changes: `git -C ~/.dotfiles pull` (symlinks mean it takes effect immediately). Bumping the nvim plugin lock is the one thing that needs an explicit step — see below.
+后续拉取更新：`git -C ~/.dotfiles pull`（因为是软链，立即生效）。
+唯一需要额外一步的是 nvim 插件锁文件 —— 见下。
 
-### Updating nvim plugins
+### 更新 nvim 插件
 
-`nvim/lazy-lock.json` is committed, so machines share plugin versions. After updating plugins on one machine:
+`nvim/lazy-lock.json` 是提交进仓库的，所以各机器插件版本一致。在一台机器上升级插件后：
 
 ```bash
 nvim --headless "+Lazy! update" +qa
-cp ~/.config/nvim/lazy-lock.json ~/.dotfiles/nvim/lazy-lock.json   # symlink → same file
+# ~/.config/nvim 是软链，lazy-lock.json 就是仓库里的那份，无需复制
 cd ~/.dotfiles && git add nvim/lazy-lock.json && git commit -m "chore: bump nvim plugins" && git push
 ```
 
-On other machines: `git -C ~/.dotfiles pull` then `:Lazy restore` inside nvim.
+其它机器：`git -C ~/.dotfiles pull`，然后在 nvim 里 `:Lazy restore`。
 
-## Notes
+## 注意事项
 
-- **No secrets in this repo.** Tokens and API keys live in `~/.zshrc.local` (git-ignored) or a dedicated secret manager.
-- **`~/.bashrc` / `~/.tmux.conf` behaviour**: only `~/.zshrc`, `~/.tmux.conf` and `~/.config/nvim` are symlinked. Your old `~/.bashrc` is left untouched (bash is still there for scripts).
+- **仓库里没有密钥。** token 与 API key 放在 `~/.zshrc.local`、`~/.gitconfig.local`（都已 git-ignored）或专用密钥管理器。
+- **`~/.bashrc` 不再由本仓库管理**：已最小化为几行注释，仅在手动进入 `bash` 时生效。脚本仍用 bash，但走 shebang，不读该文件。
+- **软链清单**：`~/.zshrc`、`~/.tmux.conf`、`~/.gitconfig`、`~/.gitignore_global`、`~/.wezterm.lua`、`~/.config/nvim`。其余文件（如 `~/.bashrc`、`~/.profile`）本仓库不碰。

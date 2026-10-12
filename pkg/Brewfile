@@ -41,7 +41,12 @@ brew "wget"
 brew "curl"
 
 # Fonts (for terminal icons)
+# 注意：Linux 侧 apt 的 fonts-jetbrains-mono 是【非 Nerd 版】，没有图标字形。
+# 若 Linux 上需要 Nerd Font，装 MesloLGM（wezterm.lua 的首选）：
+#   mkdir -p ~/.local/share/fonts && cd ~/.local/share/fonts \
+#     && curl -fLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Meslo/M/LG/complete/MesloLG%20Nerd%20Font%20Complete.ttf
 brew "font-jetbrains-mono-nerd-font"
 
 # macOS-specific
-cask "kitty"
+cask "wezterm"
+

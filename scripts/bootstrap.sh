@@ -11,8 +11,9 @@
 #   zsh          → the single INTERACTIVE shell on both platforms
 #   Oh My Zsh    → + zsh-autosuggestions, zsh-syntax-highlighting, git, copyfile,
 #                  copypath, z  (replaces ble.sh / starship / zoxide / fzf setup)
-#   symlinks     → ~/.zshrc, ~/.tmux.conf, ~/.config/nvim
-#   ~/.zshrc.local → created empty; host-specific stuff goes here (git-ignored)
+#   symlinks     → ~/.zshrc, ~/.tmux.conf, ~/.gitconfig, ~/.gitignore_global,
+#                  ~/.wezterm.lua, ~/.config/nvim
+#   local files  → ~/.zshrc.local, ~/.gitconfig.local (created empty; git-ignored)
 #
 # Scripts are NOT affected by the login shell — they keep their shebang
 # (#!/usr/bin/env bash, #!/usr/bin/env python3, ...). Only interactive use is zsh.
@@ -162,7 +163,7 @@ done
 unset _name _repo spec
 
 # =============================================================================
-# Symlinks — zsh + tmux + nvim
+# Symlinks — zsh + tmux + git + wezterm + nvim
 # =============================================================================
 link "$HOME/.zshrc" "$DOTFILES/zsh/.zshrc"
 
@@ -176,6 +177,21 @@ EOF
 fi
 
 link "$HOME/.tmux.conf" "$DOTFILES/tmux/.tmux.conf"
+
+# ---------- git ----------
+link "$HOME/.gitconfig" "$DOTFILES/git/.gitconfig"
+link "$HOME/.gitignore_global" "$DOTFILES/git/.gitignore_global"
+if [ ! -f "$HOME/.gitconfig.local" ]; then
+    cat > "$HOME/.gitconfig.local" <<'EOF'
+# Machine-local git overrides — NOT tracked by git.
+# credential helper, signing keys, per-host identity, etc.
+EOF
+    info "Created: ~/.gitconfig.local (put host-specific git config here)"
+fi
+
+# ---------- WezTerm ----------
+# WezTerm 读取 ~/.wezterm.lua（也支持 ~/.config/wezterm/wezterm.lua）
+link "$HOME/.wezterm.lua" "$DOTFILES/wezterm/wezterm.lua"
 
 if [ "$WITH_NVIM" = true ]; then
     if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
@@ -226,8 +242,7 @@ for _t in "zsh" "oh-my-zsh" "zsh-autosuggestions" "zsh-syntax-highlighting" \
     fi
 done
 echo "  └───────────────────────────────────────────────┘"
-unset _t
-echo ""
+unset _techo ""
 info "  Next:"
 info "    exec zsh                     # enter zsh in this session"
 info "    nvim                         # LazyVim installs plugins on first run"

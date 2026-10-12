@@ -1,0 +1,94 @@
+# =============================================================================
+# Git 全局配置 — 跨机器通用部分
+#
+# 由 bootstrap.sh 软链到 ~/.gitconfig。
+# 机器专属内容（credential helper、签名密钥等）放 ~/.gitconfig.local，
+# 本文件末尾会自动 include 它（git 1.7.10+，文件不存在时静默跳过）。
+# =============================================================================
+
+[user]
+	name = Degurechaff57
+	email = tsumorikawa99@gmail.com
+
+[init]
+	defaultBranch = main
+
+[core]
+	# nvim 是唯一编辑器（三方统一）
+	editor = nvim
+	# 提交时统一存 LF，检出时按平台转换
+	autocrlf = input
+	# 忽略文件权限变化（跨 Linux/macOS/Windows 时避免噪声 diff）
+	filemode = false
+	# 全局忽略规则（C++/Python/LaTeX 构建产物等），由 bootstrap.sh 软链
+	excludesfile = ~/.gitignore_global
+
+[color]
+	ui = auto
+
+[push]
+	# 首次推送时自动建立上游追踪，省掉 -u origin xxx
+	autoSetupRemote = true
+	default = simple
+
+[pull]
+	rebase = false
+
+[fetch]
+	prune = true
+
+[rebase]
+	autosquash = true
+
+[merge]
+	# 三路合并冲突时显示共同祖先，冲突更好读
+	conflictstyle = zdiff3
+
+[diff]
+	algorithm = histogram
+
+[alias]
+	# ---------- 状态与日志 ----------
+	s = status -sb
+	l = log --oneline --graph --decorate -20
+	ll = log --oneline --graph --decorate --all
+	last = log -1 HEAD --stat
+	who = shortlog -sn --no-merges
+
+	# ---------- 暂存与提交 ----------
+	a = add
+	aa = add -A
+	c = commit
+	cm = commit -m
+	ca = commit --amend --no-edit
+	unstage = reset HEAD --
+
+	# ---------- 分支 ----------
+	b = branch
+	bd = branch -d
+	bm = branch -m
+	co = checkout
+	cb = checkout -b
+	sw = switch
+	swc = switch -c
+	main = switch main
+
+	# ---------- 远程 ----------
+	p = push
+	# 用 --force-with-lease 而不是 --force：别人推了新提交时会拒绝，避免覆盖
+	pf = push --force-with-lease
+	pl = pull
+	f = fetch --all --prune
+
+	# ---------- 撤销 ----------
+	undo = reset --soft HEAD~1
+	hard = reset --hard HEAD
+	cleanup = clean -fd
+
+	# ---------- 查看 ----------
+	d = diff
+	ds = diff --staged
+
+# ---------- 机器专属覆盖（不进仓库）----------
+[include]
+	path = ~/.gitconfig.local

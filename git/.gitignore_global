@@ -1,0 +1,61 @@
+# Build artifacts
+build/
+build-*/
+cmake-build-*/
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+*.dylib
+*.exe
+*.dll
+*.d
+*.mod
+*.o.d
+
+# Compiled / generated
+*.out
+*.elf
+*.gch
+*.pch
+*.bc
+*.ll
+*.s
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+dist/
+build-python/
+
+# LaTeX aux
+*.aux
+*.log
+*.toc
+*.out
+*.lof
+*.lot
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+# Data / caches
+.cache/
+*.ipynb_checkpoints/

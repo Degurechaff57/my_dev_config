@@ -60,5 +60,16 @@ esac
 # Load additional local PATH (if exists)
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 
+# ---------- nvm (Node Version Manager) ----------
+# 必须在 PATH 设置之后加载：nvm 会把自己管理的 node 版本插到 PATH 最前面。
+# 不加载它的话，nvm 里装的全局工具（npm 包等）在交互 shell 里全部不可见 ——
+# 这是从 bash 切到 zsh 时最容易漏掉的一步。
+export NVM_DIR="$HOME/.nvm"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+    . "$NVM_DIR/nvm.sh"
+    # nvm 的 bash 补全（zsh 下也有对应的 _nvm 补全，由 oh-my-zsh 处理）
+    [ -n "${BASH_VERSION-}" ] && [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+fi
+
 # ---------- Build system concurrency ----------
 export MAKEFLAGS="-j$(nproc 2>/dev/null || sysctl -n hw.logicalcpu 2>/dev/null || echo 4)"

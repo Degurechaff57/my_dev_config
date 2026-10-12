@@ -1,13 +1,14 @@
 # ---------------------------------------------------------------------------
-# Machine-local interactive shell overrides — NEVER committed
+# Machine-local overrides — NEVER committed
 # ---------------------------------------------------------------------------
-# bootstrap.sh creates an empty ~/.zshrc.local if missing. Put host-specific
-# things there so the tracked config stays portable:
+# bootstrap.sh creates empty ~/.zshrc.local / ~/.gitconfig.local if missing.
+# Put host-specific things there so the tracked config stays portable:
 #   - CUDA / vendor SDK PATH and *_HOME variables
 #   - host-only ulimit tweaks
-#   - host-only aliases and functions
+#   - git credential helper / signing keys
 # ---------------------------------------------------------------------------
 .zshrc.local
+.gitconfig.local
 
 # macOS
 .DS_Store
