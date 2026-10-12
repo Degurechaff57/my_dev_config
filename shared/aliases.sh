@@ -84,7 +84,11 @@ fi
 
 # ---------- Quick edit dotfiles ----------
 alias dotfiles="cd ~/.dotfiles"
-alias shrc="${EDITOR:-nvim} ~/.dotfiles/bash/.bashrc"
 alias zshrc="${EDITOR:-nvim} ~/.dotfiles/zsh/.zshrc"
 alias tmuxconf="${EDITOR:-nvim} ~/.dotfiles/tmux/.tmux.conf"
 alias nvimconf="${EDITOR:-nvim} ~/.config/nvim"
+alias wezconf="${EDITOR:-nvim} ~/.dotfiles/wezterm/wezterm.lua"
+alias gitconf="${EDITOR:-nvim} ~/.dotfiles/git/.gitconfig"
+alias aliasconf="${EDITOR:-nvim} ~/.dotfiles/shared/aliases.sh"
+# 机器专属覆盖（不进仓库）
+alias localrc="${EDITOR:-nvim} ~/.zshrc.local"
