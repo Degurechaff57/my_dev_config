@@ -13,12 +13,18 @@
 # Sources shared/ configs for cross-shell aliases, functions, and env vars.
 # =============================================================================
 
-DOTFILES="${HOME}/.dotfiles"
+# ---------- Resolve the repo root from this file's REAL path ----------
+# ~/.zshrc is a symlink into the repo, so `:A` follows it. This keeps the repo
+# working from any clone location, not only ~/.dotfiles.
+DOTFILES="${${(%):-%x}:A:h:h}"
+[ -d "$DOTFILES/shared" ] || DOTFILES="${HOME}/.dotfiles"
 
 # ---------- Shared environment (OS detection, PATH, XDG, editor, locale) ----------
 [ -f "$DOTFILES/shared/env.sh" ] && source "$DOTFILES/shared/env.sh"
 
 # ---------- Oh My Zsh ----------
+# 未安装时不要报一串 "no such file"：给一句可执行的提示，然后继续加载
+# shared/ 里的环境与别名，shell 仍然可用。
 export ZSH="$HOME/.oh-my-zsh"
 
 # Theme
@@ -34,7 +40,11 @@ plugins=(
     zsh-syntax-highlighting
 )
 
-source $ZSH/oh-my-zsh.sh
+if [ -f "$ZSH/oh-my-zsh.sh" ]; then
+    source "$ZSH/oh-my-zsh.sh"
+else
+    print -u2 "zsh: 未找到 Oh My Zsh（$ZSH）。安装：bash \"$DOTFILES/scripts/bootstrap.sh\""
+fi
 
 # ---------- Shared aliases (git, navigation, modern CLI replacements, clipboard) ----------
 [ -f "$DOTFILES/shared/aliases.sh" ] && source "$DOTFILES/shared/aliases.sh"
@@ -46,3 +56,8 @@ source $ZSH/oh-my-zsh.sh
 # Put host-specific things here: CUDA paths, vendor SDK env, ulimit tweaks,
 # host-only aliases. Create it with: touch ~/.zshrc.local
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
+# NOTE: third-party installers (Antigravity, nvm, …) tend to append absolute
+# paths to ~/.zshrc — which here is a symlink into this repo. Keep such lines
+# in ~/.zshrc.local instead: a hard-coded /home/<user> path breaks the moment
+# the repo is deployed on another machine.

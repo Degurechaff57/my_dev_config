@@ -83,12 +83,25 @@ elif [ "$OS" = "linux" ]; then
 fi
 
 # ---------- Quick edit dotfiles ----------
-alias dotfiles="cd ~/.dotfiles"
-alias zshrc="${EDITOR:-nvim} ~/.dotfiles/zsh/.zshrc"
-alias tmuxconf="${EDITOR:-nvim} ~/.dotfiles/tmux/.tmux.conf"
-alias nvimconf="${EDITOR:-nvim} ~/.config/nvim"
-alias wezconf="${EDITOR:-nvim} ~/.dotfiles/wezterm/wezterm.lua"
-alias gitconf="${EDITOR:-nvim} ~/.dotfiles/git/.gitconfig"
-alias aliasconf="${EDITOR:-nvim} ~/.dotfiles/shared/aliases.sh"
+# Single quotes: $DOTFILES and $EDITOR are expanded when the alias runs, so a
+# repo cloned somewhere other than ~/.dotfiles still works.
+alias dotfiles='cd "$DOTFILES"'
+alias zshrc='${EDITOR:-nvim} "$DOTFILES/zsh/.zshrc"'
+alias bashrc='${EDITOR:-nvim} "$DOTFILES/bash/.bashrc"'
+alias bashprofile='${EDITOR:-nvim} "$DOTFILES/bash/.bash_profile"'
+alias tmuxconf='${EDITOR:-nvim} "$DOTFILES/tmux/.tmux.conf"'
+alias nvimconf='${EDITOR:-nvim} ~/.config/nvim'
+alias wezconf='${EDITOR:-nvim} "$DOTFILES/wezterm/wezterm.lua"'
+alias gitconf='${EDITOR:-nvim} "$DOTFILES/git/.gitconfig"'
+alias aliasconf='${EDITOR:-nvim} "$DOTFILES/shared/aliases.sh"'
+alias funcsconf='${EDITOR:-nvim} "$DOTFILES/shared/functions.sh"'
+alias envconf='${EDITOR:-nvim} "$DOTFILES/shared/env.sh"'
+
+# Re-run the installer (add --check to only verify links)
+alias bootstrap='bash "$DOTFILES/scripts/bootstrap.sh"'
+alias dotcheck='bash "$DOTFILES/scripts/bootstrap.sh" --check'
+
 # 机器专属覆盖（不进仓库）
-alias localrc="${EDITOR:-nvim} ~/.zshrc.local"
+alias localrc='${EDITOR:-nvim} ~/.zshrc.local'
+alias bashlocal='${EDITOR:-nvim} ~/.bashrc.local'
+alias gitlocal='${EDITOR:-nvim} ~/.gitconfig.local'

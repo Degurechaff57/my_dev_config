@@ -6,8 +6,10 @@
 # Terminal & Shell
 brew "tmux"
 brew "zsh"
-brew "zsh-autosuggestions"
-brew "zsh-syntax-highlighting"
+# bash-completion：bash/.bashrc 会自动 source（macOS 路径 /opt/homebrew/etc/profile.d）
+brew "bash-completion"
+# zsh-autosuggestions / zsh-syntax-highlighting 不在这里装：
+# bootstrap.sh 会把它们克隆进 ~/.oh-my-zsh/custom/plugins（OMZ 只认那个位置）。
 
 # Editor
 brew "neovim"

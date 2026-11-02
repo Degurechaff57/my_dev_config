@@ -1,7 +1,7 @@
 -- Options are automatically loaded before lazy.nvim startup
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
-
+vim.opt.wrap = true
 vim.opt.spelllang = { "en", "cjk" }
 
 -- OSC 52 clipboard over SSH: yank in nvim → local laptop clipboard
@@ -21,8 +21,12 @@ if vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT or vim.env.SSH_TTY then
       -- directly via bracketed paste, which is orders of magnitude
       -- faster than base64 roundtripping the clipboard through OSC 52.
       paste = {
-        ["+"] = function() return vim.fn.getreg("+") end,
-        ["*"] = function() return vim.fn.getreg("*") end,
+        ["+"] = function()
+          return vim.fn.getreg("+")
+        end,
+        ["*"] = function()
+          return vim.fn.getreg("*")
+        end,
       },
     }
     vim.opt.clipboard = "unnamedplus" -- yank → + register → OSC 52 → local clipboard

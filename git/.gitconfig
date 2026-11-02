@@ -92,3 +92,7 @@
 # ---------- 机器专属覆盖（不进仓库）----------
 [include]
 	path = ~/.gitconfig.local
+
+# NOTE: 代理、credential helper、签名密钥等与机器相关的设置放 ~/.gitconfig.local。
+# 不要在仓库里写死 http.proxy=127.0.0.1:<port> —— 换到没有该代理的机器后，
+# git clone/push 会直接失败，而报错信息看起来与"配置"毫无关系。

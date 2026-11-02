@@ -1,14 +1,19 @@
 -- ============================================================
--- WezTerm 配置 — 与 VSCode 操作对齐
+-- WezTerm 配置 — 键位与 VSCode / tmux 统一
 --
--- 设计原则：优先使用 WezTerm 内置默认键位，因为它们已经和 VSCode 一致：
---     Ctrl+Shift+5   → 分屏（VSCode: 终端分屏也是这个）
---     Ctrl+1/2/3     → 切换标签（VSCode: 切换编辑器组也是这个）
---     Ctrl+Tab       → 下一个标签（VSCode: 下一个编辑器）
---     Alt+←/→/↑/↓    → 切换窗格（VSCode: 无直接对应，但语义一致）
---     Ctrl+w         → 透传给 shell（VSCode: 关闭编辑器，但终端里必须透传）
+-- 统一方案（2026-10）：
+--     Ctrl+1..8     → 直接切到第 N 个标签；Ctrl+9 → 最后一个标签
+--     Ctrl+Tab      → 下一个标签；Ctrl+Shift+Tab → 上一个
+--     Ctrl+Shift+5  → 上下分屏（VSCode: Ctrl+Shift+5 分屏终端）
+--     Ctrl+\        → 左右分屏
+--     Alt+←/→/↑/↓   → 切换 WezTerm 窗格
+--     Alt+1..9      → 不拦截，透传给 tmux，用于切换 tmux pane（见 ~/.tmux.conf）
+--     Ctrl+w        → 透传给 shell（终端里必须透传）
 --
--- 只覆盖默认中不好用的部分，其余一律不写 —— 配置越少越不容易和别的工具冲突。
+-- 注意：WezTerm 内置默认的标签切换是 Ctrl+Shift+数字 / Super+数字，不是 Ctrl+数字；
+-- 而且 Super+数字在 Ubuntu 上被 Dock 的全局快捷键占用。
+-- 所以下面显式把裸 Ctrl+数字绑定为标签切换 —— 代价是 tmux 收不到 Ctrl+数字。
+-- tmux 里：Alt+数字 / Alt+hjkl 切 pane；Ctrl+b 数字 切 window。
 --
 -- 同步到 $HOME/.wezterm.lua 使用（bootstrap.sh 会建软链）
 -- ============================================================
@@ -104,11 +109,25 @@ config.keys = {
 	{ key = "F4", mods = "CTRL", action = act.EmitEvent("close-tab-safe") },
 
 	-- ---------- 窗格 ----------
-	-- Alt+方向键 切换窗格是 WezTerm 默认，保留（与 VSCode 的 Ctrl+数字 切组语义相近）
+	-- Alt+方向键 切换窗格是 WezTerm 默认，保留。
+	-- Alt+数字 故意不绑定：透传给 tmux，用来切 tmux pane（见 ~/.tmux.conf）。
 	-- 关闭当前窗格：Ctrl+Shift+Alt+W（比默认的 Ctrl+Shift+W 更明确，避免误关标签）
 	{ key = "w", mods = "CTRL|SHIFT|ALT", action = act.CloseCurrentPane({ confirm = true }) },
 	-- 放大/还原当前窗格（对应 VSCode 把某个编辑器组最大化的"专注"语义）
 	{ key = "z", mods = "CTRL|SHIFT|ALT", action = act.TogglePaneZoomState },
 }
+
+-- ---------- 标签页直接跳转（Ctrl+数字）----------
+-- WezTerm 默认只绑了 Ctrl+Shift+数字 / Super+数字；这里按统一方案改成裸 Ctrl+数字：
+--   Ctrl+1..8 → 第 1..8 个标签；Ctrl+9 → 最后一个标签（和浏览器/VSCode 一致）
+-- 注意：Super+数字 在 Ubuntu 上被 Dock 的全局快捷键占用，不能用。
+for i = 1, 8 do
+	table.insert(config.keys, {
+		key = tostring(i),
+		mods = "CTRL",
+		action = act.ActivateTab(i - 1),
+	})
+end
+table.insert(config.keys, { key = "9", mods = "CTRL", action = act.ActivateTab(-1) })
 
 return config
